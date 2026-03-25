@@ -1,6 +1,5 @@
 # ============================================================
-#  main.py  —  Yahi file run karni hai: python main.py
-#  Har ghante automatically 2 articles publish karega
+#  main.py  —  GitHub Actions Version (No Loop)
 # ============================================================
 import logging, time
 from datetime import datetime
@@ -11,13 +10,13 @@ from image_fetcher import get_image, inject_image_into_article
 from blogger_poster import post_to_blogger
 
 # ── Logging setup ──────────────────────────────────────────
+# GitHub Actions ke liye StreamHandler zaroori hai
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s  %(levelname)-8s %(message)s",
     datefmt="%d-%b %H:%M",
     handlers=[
-        logging.FileHandler("blog.log", encoding="utf-8"),
-        logging.StreamHandler(),
+        logging.StreamHandler(), 
     ],
 )
 log = logging.getLogger(__name__)
@@ -63,7 +62,7 @@ def run_once():
             log.error(f"   ❌ Topic '{topic}' mein error: {e}")
             results.append({"topic": topic, "status": f"❌ error: {e}"})
 
-        # Dono topics ke beech thoda wait
+        # Dono topics ke beech thoda wait (API safety ke liye)
         if i < len(topics):
             log.info(f"   ⏳ {Config.DELAY_BETWEEN}s wait kar raha hoon...")
             time.sleep(Config.DELAY_BETWEEN)
@@ -81,23 +80,17 @@ def run_once():
 
 
 # ============================================================
-#  SCHEDULER — Har ghante run karega
+#  MAIN EXECUTION — GitHub isse trigger karega
 # ============================================================
 def main():
-    log.info("🤖  Auto Blog Bot start ho gaya!")
-    log.info(f"   Har {Config.RUN_EVERY_HOURS} ghante mein {Config.TOPICS_PER_RUN} articles publish karega")
+    log.info("🤖  Auto Blog Bot (GitHub Mode) start ho gaya!")
     log.info(f"   Language: {Config.ARTICLE_LANGUAGE} | Live: {Config.PUBLISH_LIVE}")
 
-    # Turant pehla run karo
+    # GitHub Actions mein hum loop nahi chalate kyunki 
+    # GitHub khud har ghante script ko fresh start karta hai.
     run_once()
 
-    # Phir har ghante
-    interval_seconds = Config.RUN_EVERY_HOURS * 3600
-    while True:
-        log.info(f"\n💤  Next run {Config.RUN_EVERY_HOURS} ghante baad...")
-        time.sleep(interval_seconds)
-        run_once()
-
+    log.info("✅ Run complete. GitHub will trigger this again in 1 hour.")
 
 if __name__ == "__main__":
     main()
