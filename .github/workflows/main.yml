@@ -1,0 +1,25 @@
+name: Auto Blog Bot
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Har ghante ke shuru mein (0th minute) chalega
+  workflow_dispatch:      # Manual button se chalane ke liye
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run Automation
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          BLOG_ID: ${{ secrets.BLOG_ID }}
+          GOOGLE_TOKEN_JSON: ${{ secrets.GOOGLE_TOKEN_JSON }}
+        run: python main.py
