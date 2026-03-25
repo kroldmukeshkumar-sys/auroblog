@@ -1,0 +1,17 @@
+# Sensitive / secrets
+token.pickle
+credentials.json
+*.log
+blog.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Zip
+*.zip
+
+# IDE
+.vscode/
+.idea/

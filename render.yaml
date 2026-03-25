@@ -1,0 +1,15 @@
+services:
+  - type: worker
+    name: autoblog-bot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: PEXELS_API_KEY
+        sync: false
+      - key: BLOG_ID
+        sync: false
+      - key: GOOGLE_TOKEN_JSON
+        sync: false
